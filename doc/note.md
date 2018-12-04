@@ -145,3 +145,74 @@ POJO对象有时也被称为Data对象，大量应用于表现现实中的对象
 > 
 
 <font color="#f00">解决办法：这是由于分页插件pagehelper的版本和mybatis不兼容的原因，修改分页插件的版本即可。</font>
+
+----
+
+<h1><a href="http://www.importnew.com/29401.html">SpringBoot 拦截器</a></h1>
+
+>在实际开发过程中，经常会碰见一些比如系统启动初始化信息、统计在线人数、在线用户数、过滤敏高词汇、访问权限控制(URL级别)等业务需求。这些对于业务来说一般上是无关的，业务方是无需关系的，业务只需要关系自己内部业务的事情。所以一般上实现以上的功能，都会或多或少的用到过滤器、监听器、拦截器来实现以上功能。
+
+**编写自定义拦截器类**
+
+```
+public class MyInterceptor implements HandlerInterceptor {
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        //只有返回true才会继续向下执行，返回false取消当前请求
+        System.out.println("myinterc prehandler");
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
+        System.out.println("myinterc posthandler");
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
+        System.out.println("myinterc aftercompletion");
+    }
+}
+```
+- preHandle：在业务处理器处理请求之前被调用。预处理，可以进行编码、安全控制、权限校验等处理；
+- postHandle：在业务处理器处理请求执行完成后，生成视图之前执行。后处理（调用了Service并返回ModelAndView，但未进行页面渲染），有机会修改ModelAndView 
+- afterCompletion：在DispatcherServlet完全处理完请求后被调用，可用于清理资源等。返回处理（已经渲染了页面）；
+
+
+**通过继承WebMvcConfigurerAdapter注册拦截器**
+
+```
+@Configuration
+public class MyAdapter extends WebMvcConfigurerAdapter {
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        //添加拦截器
+        registry.addInterceptor(new MyInterceptor())
+                .addPathPatterns("/**");
+        super.addInterceptors(registry);
+    }
+}
+
+```
+**请求链路说明**
+
+![](../res/02.png)
+
+---
+
+<h1><a href="https://blog.csdn.net/long476964/article/details/80626930">@Configuration</a></h1>
+
+> @Component和@Configuration都可以作为配置类。
+> 
+> @Component注解的范围最广，所有类都可以注解，但是@Configuration注解一般注解在这样的类上：这个类里面有@Value注解的成员变量和@Bean注解的方法，就是一个配置类
+
+-----
+
+<h1>@Component</h1>
+
+> @component （把普通pojo实例化到spring容器中，相当于配置文件中的 
+<bean id="" class=""/>）
+
+- 泛指各种组件，就是说当我们的类不属于各种归类的时候（不属于@Controller、@Services等的时候），我们就可以使用@Component来标注这个类
