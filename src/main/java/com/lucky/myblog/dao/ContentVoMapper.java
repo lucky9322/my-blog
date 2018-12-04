@@ -1,5 +1,6 @@
 package com.lucky.myblog.dao;
 
+import com.lucky.myblog.model.bo.ArchiveBo;
 import com.lucky.myblog.model.vo.ContentVo;
 import com.lucky.myblog.model.vo.ContentVoExample;
 import java.util.List;
@@ -35,4 +36,8 @@ public interface ContentVoMapper {
     int updateByPrimaryKeyWithBLOBs(ContentVo record);
 
     int updateByPrimaryKey(ContentVo record);
+
+    List<ArchiveBo> findReturnArchiveBo();
+
+    List<ContentVo> findByCatalog(Integer mid);
 }

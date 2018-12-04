@@ -3,10 +3,12 @@ package com.lucky.myblog.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.lucky.myblog.constant.WebConst;
+import com.lucky.myblog.model.bo.ArchiveBo;
 import com.lucky.myblog.model.bo.CommentBo;
 import com.lucky.myblog.model.vo.ContentVo;
 import com.lucky.myblog.service.ICommentService;
 import com.lucky.myblog.service.IContentService;
+import com.lucky.myblog.service.ISiteService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Project: my-blog
@@ -31,6 +34,9 @@ public class IndexController extends BaseController {
 
     @Resource
     private ICommentService commentService;
+
+    @Resource
+    private ISiteService siteService;
 
     /**
      * 首页
@@ -96,5 +102,17 @@ public class IndexController extends BaseController {
             PageInfo<CommentBo> commentsPaginator = commentService.getComments(contents.getCid(), Integer.parseInt(cp), 6);
             request.setAttribute("comments", commentsPaginator);
         }
+    }
+
+    /**
+     * 归档页
+     *
+     * @return
+     */
+    @GetMapping(value = "archives")
+    public String archives(HttpServletRequest request) {
+        List<ArchiveBo> archives = siteService.getArchives();
+        request.setAttribute("archives", archives);
+        return this.render("archives");
     }
 }
