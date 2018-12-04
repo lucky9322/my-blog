@@ -3,8 +3,11 @@ package com.lucky.myblog.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.lucky.myblog.constant.WebConst;
+import com.lucky.myblog.model.bo.CommentBo;
 import com.lucky.myblog.model.vo.ContentVo;
+import com.lucky.myblog.service.ICommentService;
 import com.lucky.myblog.service.IContentService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -26,6 +29,9 @@ public class IndexController extends BaseController {
     @Resource
     private IContentService contentService;
 
+    @Resource
+    private ICommentService commentService;
+
     /**
      * 首页
      *
@@ -37,7 +43,7 @@ public class IndexController extends BaseController {
     public String index(HttpServletRequest servletRequest,
                         @RequestParam(value = "limit", defaultValue = "12") int limit) {
 
-        return this.index(servletRequest,1,limit);
+        return this.index(servletRequest, 1, limit);
     }
 
     /**
@@ -59,5 +65,36 @@ public class IndexController extends BaseController {
             this.title(servletRequest, "第" + p + "页");
         }
         return this.render("index");
+    }
+
+    @GetMapping(value = {"/article/{cid}", "/article/{cid}.html"})
+    public String getArticle(HttpServletRequest servletRequest, @PathVariable String cid) {
+        ContentVo contents = contentService.getContents(cid);
+        if (null==contents){
+            return this.render_404();
+        }
+        servletRequest.setAttribute("article",contents);
+        servletRequest.setAttribute("is_post",true);
+        completeArticle(servletRequest, contents);
+        return this.render("post");
+    }
+
+
+    /**
+     * 抽取公共方法
+     *
+     * @param request
+     * @param contents
+     */
+    private void completeArticle(HttpServletRequest request, ContentVo contents) {
+        if (contents.getAllowComment()) {
+            String cp = request.getParameter("cp");
+            if (StringUtils.isBlank(cp)) {
+                cp = "1";
+            }
+            request.setAttribute("cp", cp);
+            PageInfo<CommentBo> commentsPaginator = commentService.getComments(contents.getCid(), Integer.parseInt(cp), 6);
+            request.setAttribute("comments", commentsPaginator);
+        }
     }
 }

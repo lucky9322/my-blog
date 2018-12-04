@@ -216,3 +216,20 @@ public class MyAdapter extends WebMvcConfigurerAdapter {
 <bean id="" class=""/>）
 
 - 泛指各种组件，就是说当我们的类不属于各种归类的时候（不属于@Controller、@Services等的时候），我们就可以使用@Component来标注这个类
+
+
+----
+
+<h1><a href="https://blog.csdn.net/py_tamir/article/details/80957484">selectByExample和selectByExampleWithBLOBs有何区别</a></h1>
+
+- 两个方法的返回的resultMap 不同
+
+	>selectByExample  方法返回：BaseResultMap
+	
+	>selectByExampleWithBLOBs  方法返回：ResultMapWithBLOBs
+	
+	>ResultMapWithBLOBs 定义时，继承了BaseResultMap，并且自己特殊的字段，该字段通常是longvarchar类型，
+
+- 使用场景不同
+
+	> 若检索大字段时，则需要使用selectByExampleWithBLOBs  ，一般情况则使用selectByExample  即可。
