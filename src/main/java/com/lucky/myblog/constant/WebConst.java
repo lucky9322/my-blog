@@ -25,4 +25,18 @@ public class WebConst {
      */
     public static final int HIT_EXCEED = 10;
 
+    /**
+     * 成功返回
+     */
+    public static String SUCCESS_RESULT = "SUCCESS";
+
+    public static String LOGIN_SESSION_KEY = "login_user";
+
+    public static final String USER_IN_COOKIE = "S_L_ID";
+
+    /**
+     * aes加密加盐
+     */
+    public static String AES_SALT = "0123456789abcdef";
+
 }

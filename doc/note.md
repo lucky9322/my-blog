@@ -233,3 +233,17 @@ public class MyAdapter extends WebMvcConfigurerAdapter {
 - 使用场景不同
 
 	> 若检索大字段时，则需要使用selectByExampleWithBLOBs  ，一般情况则使用selectByExample  即可。
+
+
+-----
+
+<h1><a href="https://blog.csdn.net/a670941001/article/details/54619432">Mybatis中updateByPrimaryKeySelective和updateByPrimaryKey区别</a></h1>
+
+- int updateByPrimaryKeySelective(TbItem record);
+
+	updateByPrimaryKeySelective会对字段进行判断再更新(如果为Null就忽略更新)，如果你只想更新某一字段，可以用这个方法
+	
+- int updateByPrimaryKey(TbItem record);
+
+	updateByPrimaryKey对你注入的字段全部更新
+

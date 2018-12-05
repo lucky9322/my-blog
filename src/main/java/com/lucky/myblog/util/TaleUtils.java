@@ -3,6 +3,7 @@ package com.lucky.myblog.util;
 
 import com.lucky.myblog.constant.WebConst;
 import com.lucky.myblog.exception.TipException;
+import com.lucky.myblog.model.vo.UserVo;
 import org.apache.commons.lang3.StringUtils;
 
 import org.commonmark.Extension;
@@ -138,39 +139,39 @@ public class TaleUtils {
         return newDataSource;
     }
 
-//    /**
-//     * 返回当前登录用户
-//     *
-//     * @return
-//     */
-//    public static UserVo getLoginUser(HttpServletRequest request) {
-//        HttpSession session = request.getSession();
-//        if (null == session) {
-//            return null;
-//        }
-//        return (UserVo) session.getAttribute(WebConst.LOGIN_SESSION_KEY);
-//    }
+    /**
+     * 返回当前登录用户
+     *
+     * @return
+     */
+    public static UserVo getLoginUser(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (null == session) {
+            return null;
+        }
+        return (UserVo) session.getAttribute(WebConst.LOGIN_SESSION_KEY);
+    }
 
 
-//    /**
-//     * 获取cookie中的用户id
-//     *
-//     * @param request
-//     * @return
-//     */
-//    public static Integer getCookieUid(HttpServletRequest request) {
-//        if (null != request) {
-//            Cookie cookie = cookieRaw(WebConst.USER_IN_COOKIE, request);
-//            if (cookie != null && cookie.getValue() != null) {
-//                try {
-//                    String uid = Tools.deAes(cookie.getValue(), WebConst.AES_SALT);
-//                    return StringUtils.isNotBlank(uid) && Tools.isNumber(uid) ? Integer.valueOf(uid) : null;
-//                } catch (Exception e) {
-//                }
-//            }
-//        }
-//        return null;
-//    }
+    /**
+     * 获取cookie中的用户id
+     *
+     * @param request
+     * @return
+     */
+    public static Integer getCookieUid(HttpServletRequest request) {
+        if (null != request) {
+            Cookie cookie = cookieRaw(WebConst.USER_IN_COOKIE, request);
+            if (cookie != null && cookie.getValue() != null) {
+                try {
+                    String uid = Tools.deAes(cookie.getValue(), WebConst.AES_SALT);
+                    return StringUtils.isNotBlank(uid) && Tools.isNumber(uid) ? Integer.valueOf(uid) : null;
+                } catch (Exception e) {
+                }
+            }
+        }
+        return null;
+    }
 
     /**
      * 从cookies中获取指定cookie
