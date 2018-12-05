@@ -33,5 +33,13 @@ public interface IContentService {
      */
     void updateContentByCid(ContentVo contentVo);
 
+    /**
+     * 搜索、分页
+     * @param keyword keyword
+     * @param page page
+     * @param limit limit
+     * @return ContentVo
+     */
+    PageInfo<ContentVo> getArticles(String keyword,Integer page,Integer limit);
 
 }

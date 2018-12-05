@@ -69,4 +69,17 @@ public class ContentServiceImpl implements IContentService {
             contentDao.updateByPrimaryKey(contentVo);
         }
     }
+
+    @Override
+    public PageInfo<ContentVo> getArticles(String keyword, Integer page, Integer limit) {
+        PageHelper.startPage(page,limit);
+        ContentVoExample contentVoExample = new ContentVoExample();
+        ContentVoExample.Criteria criteria = contentVoExample.createCriteria();
+        criteria.andTypeEqualTo(Types.ARTICLE.getType());
+        criteria.andStatusEqualTo(Types.PUBLISH.getType());
+        criteria.andTitleLike("%" + keyword + "%");
+        contentVoExample.setOrderByClause("created desc");
+        List<ContentVo> contentVos = contentDao.selectByExampleWithBLOBs(contentVoExample);
+        return new PageInfo<>(contentVos);
+    }
 }

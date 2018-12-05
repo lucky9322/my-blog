@@ -1,5 +1,6 @@
 package com.lucky.myblog.util;
 
+import com.github.pagehelper.PageInfo;
 import com.lucky.myblog.constant.WebConst;
 import com.lucky.myblog.model.vo.ContentVo;
 import com.vdurmont.emoji.EmojiParser;
@@ -237,4 +238,15 @@ public class Commons {
         String hash = TaleUtils.MD5encode(email.trim().toLowerCase());
         return avatarUrl + hash + ".png";
     }
+
+    /**
+     * 判断分页中是否有数据
+     *
+     * @param paginator
+     * @return
+     */
+    public static boolean is_empty(PageInfo paginator) {
+        return paginator == null || (paginator.getList() == null) || (paginator.getList().size() == 0);
+    }
+
 }
