@@ -1,5 +1,7 @@
 package com.lucky.myblog.controller;
 
+import com.lucky.myblog.util.MapCache;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -9,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 public abstract class BaseController {
 
     public static String THEME = "themes/default";
+
+    protected MapCache cache = MapCache.single();
 
     /**
      * @param viewName

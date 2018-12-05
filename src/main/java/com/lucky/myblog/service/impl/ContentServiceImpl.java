@@ -62,4 +62,11 @@ public class ContentServiceImpl implements IContentService {
         }
         return null;
     }
+
+    @Override
+    public void updateContentByCid(ContentVo contentVo) {
+        if (null != contentVo && null != contentVo.getCid()) {
+            contentDao.updateByPrimaryKey(contentVo);
+        }
+    }
 }
