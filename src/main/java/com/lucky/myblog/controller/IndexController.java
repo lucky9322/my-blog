@@ -3,11 +3,14 @@ package com.lucky.myblog.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.lucky.myblog.constant.WebConst;
+import com.lucky.myblog.dto.Types;
 import com.lucky.myblog.model.bo.ArchiveBo;
 import com.lucky.myblog.model.bo.CommentBo;
 import com.lucky.myblog.model.vo.ContentVo;
+import com.lucky.myblog.model.vo.MetaVo;
 import com.lucky.myblog.service.ICommentService;
 import com.lucky.myblog.service.IContentService;
+import com.lucky.myblog.service.IMetaService;
 import com.lucky.myblog.service.ISiteService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,6 +40,9 @@ public class IndexController extends BaseController {
 
     @Resource
     private ISiteService siteService;
+
+    @Resource
+    private IMetaService metaService;
 
     /**
      * 首页
@@ -76,11 +82,11 @@ public class IndexController extends BaseController {
     @GetMapping(value = {"/article/{cid}", "/article/{cid}.html"})
     public String getArticle(HttpServletRequest servletRequest, @PathVariable String cid) {
         ContentVo contents = contentService.getContents(cid);
-        if (null==contents){
+        if (null == contents) {
             return this.render_404();
         }
-        servletRequest.setAttribute("article",contents);
-        servletRequest.setAttribute("is_post",true);
+        servletRequest.setAttribute("article", contents);
+        servletRequest.setAttribute("is_post", true);
         completeArticle(servletRequest, contents);
         return this.render("post");
     }
@@ -114,5 +120,18 @@ public class IndexController extends BaseController {
         List<ArchiveBo> archives = siteService.getArchives();
         request.setAttribute("archives", archives);
         return this.render("archives");
+    }
+
+    /**
+     * 友链
+     *
+     * @param servletRequest
+     * @return
+     */
+    @GetMapping(value = "links")
+    public String links(HttpServletRequest servletRequest) {
+        List<MetaVo> links = metaService.getMetas(Types.LINK.getType());
+        servletRequest.setAttribute("links", links);
+        return this.render("links");
     }
 }
