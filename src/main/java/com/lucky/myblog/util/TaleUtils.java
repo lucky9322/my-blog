@@ -192,26 +192,26 @@ public class TaleUtils {
         }
         return null;
     }
-//
-//    /**
-//     * 设置记住密码cookie
-//     *
-//     * @param response
-//     * @param uid
-//     */
-//    public static void setCookie(HttpServletResponse response, Integer uid) {
-//        try {
-//            String val = Tools.enAes(uid.toString(), WebConst.AES_SALT);
-//            boolean isSSL = false;
-//            Cookie cookie = new Cookie(WebConst.USER_IN_COOKIE, val);
-//            cookie.setPath("/");
-//            cookie.setMaxAge(60 * 30);
-//            cookie.setSecure(isSSL);
-//            response.addCookie(cookie);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+
+    /**
+     * 设置记住密码cookie
+     *
+     * @param response
+     * @param uid
+     */
+    public static void setCookie(HttpServletResponse response, Integer uid) {
+        try {
+            String val = Tools.enAes(uid.toString(), WebConst.AES_SALT);
+            boolean isSSL = false;
+            Cookie cookie = new Cookie(WebConst.USER_IN_COOKIE, val);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 30);
+            cookie.setSecure(isSSL);
+            response.addCookie(cookie);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 提取html中的文字

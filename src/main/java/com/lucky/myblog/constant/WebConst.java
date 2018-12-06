@@ -39,4 +39,9 @@ public class WebConst {
      */
     public static String AES_SALT = "0123456789abcdef";
 
+    /**
+     * 最大获取文章条数
+     */
+    public static final int MAX_POSTS = 9999;
+
 }

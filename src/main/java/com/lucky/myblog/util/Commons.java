@@ -11,6 +11,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Project: my-blog
@@ -18,8 +20,17 @@ import java.util.Map;
  */
 @Component
 public class Commons {
-
     public static String THEME = "themes/default";
+
+    /**
+     * 判断分页中是否有数据
+     *
+     * @param paginator
+     * @return
+     */
+    public static boolean is_empty(PageInfo paginator) {
+        return paginator == null || (paginator.getList() == null) || (paginator.getList().size() == 0);
+    }
 
     /**
      * 网站链接
@@ -39,6 +50,16 @@ public class Commons {
     public static String site_url(String sub) {
         return site_option("site_url") + sub;
     }
+
+    /**
+     * 网站标题
+     *
+     * @return
+     */
+    public static String site_title() {
+        return site_option("site_title");
+    }
+
     /**
      * 网站配置项
      *
@@ -48,7 +69,6 @@ public class Commons {
     public static String site_option(String key) {
         return site_option(key, "");
     }
-
 
     /**
      * 网站配置项
@@ -70,6 +90,54 @@ public class Commons {
     }
 
     /**
+     * 截取字符串
+     *
+     * @param str
+     * @param len
+     * @return
+     */
+    public static String substr(String str, int len) {
+        if (str.length() > len) {
+            return str.substring(0, len);
+        }
+        return str;
+    }
+
+    /**
+     * 返回主题URL
+     *
+     * @return
+     */
+    public static String theme_url() {
+        return site_url(Commons.THEME);
+    }
+
+    /**
+     * 返回主题下的文件路径
+     *
+     * @param sub
+     * @return
+     */
+    public static String theme_url(String sub) {
+        return site_url(Commons.THEME + sub);
+    }
+
+    /**
+     * 返回github头像地址
+     *
+     * @param email
+     * @return
+     */
+    public static String gravatar(String email) {
+        String avatarUrl = "https://github.com/identicons/";
+        if (StringUtils.isBlank(email)) {
+            email = "user@hanshuai.xin";
+        }
+        String hash = TaleUtils.MD5encode(email.trim().toLowerCase());
+        return avatarUrl + hash + ".png";
+    }
+
+    /**
      * 返回文章链接地址
      *
      * @param contents
@@ -77,6 +145,18 @@ public class Commons {
      */
     public static String permalink(ContentVo contents) {
         return permalink(contents.getCid(), contents.getSlug());
+    }
+
+
+    /**
+     * 获取随机数
+     *
+     * @param max
+     * @param str
+     * @return
+     */
+    public static String random(int max, String str) {
+        return UUID.random(1, max) + str;
     }
 
     /**
@@ -90,31 +170,29 @@ public class Commons {
         return site_url("/article/" + (StringUtils.isNotBlank(slug) ? slug : cid.toString()));
     }
 
-
     /**
-     * 显示文章缩略图，顺序为：文章第一张图 -> 随机获取
+     * 格式化unix时间戳为日期
      *
+     * @param unixTime
      * @return
      */
-    public static String show_thumb(ContentVo contents) {
-        int cid = contents.getCid();
-        int size = cid % 20;
-        size = size == 0 ? 1 : size;
-        return "/user/img/rand/" + size + ".jpg";
+    public static String fmtdate(Integer unixTime) {
+        return fmtdate(unixTime, "yyyy-MM-dd");
     }
-
-    private static final String[] ICONS = {"bg-ico-book", "bg-ico-game", "bg-ico-note", "bg-ico-chat", "bg-ico-code", "bg-ico-image", "bg-ico-web", "bg-ico-link", "bg-ico-design", "bg-ico-lock"};
 
     /**
-     * 显示文章图标
+     * 格式化unix时间戳为日期
      *
-     * @param cid
+     * @param unixTime
+     * @param patten
      * @return
      */
-    public static String show_icon(int cid) {
-        return ICONS[cid % ICONS.length];
+    public static String fmtdate(Integer unixTime, String patten) {
+        if (null != unixTime && StringUtils.isNotBlank(patten)) {
+            return DateKit.formatDateByUnixTime(unixTime, patten);
+        }
+        return "";
     }
-
 
     /**
      * 显示分类
@@ -132,53 +210,6 @@ public class Commons {
             return sbuf.toString();
         }
         return show_categories("默认分类");
-    }
-
-    /**
-     * 获取社交的链接地址
-     *
-     * @return
-     */
-    public static Map<String, String> social() {
-        final String prefix = "social_";
-        Map<String, String> map = new HashMap<>();
-        map.put("weibo", WebConst.initConfig.get(prefix + "weibo"));
-        map.put("zhihu", WebConst.initConfig.get(prefix + "zhihu"));
-        map.put("github", WebConst.initConfig.get(prefix + "github"));
-        map.put("twitter", WebConst.initConfig.get(prefix + "twitter"));
-        return map;
-    }
-
-    /**
-     * 网站标题
-     *
-     * @return
-     */
-    public static String site_title() {
-        return site_option("site_title");
-    }
-
-    /**
-     * 格式化unix时间戳为日期
-     *
-     * @param unixTime
-     * @return
-     */
-    public static String fmtdate(Integer unixTime) {
-        return fmtdate(unixTime, "yyyy-MM-dd");
-    }
-    /**
-     * 格式化unix时间戳为日期
-     *
-     * @param unixTime
-     * @param patten
-     * @return
-     */
-    public static String fmtdate(Integer unixTime, String patten) {
-        if (null != unixTime && StringUtils.isNotBlank(patten)) {
-            return DateKit.formatDateByUnixTime(unixTime, patten);
-        }
-        return "";
     }
 
     /**
@@ -200,6 +231,27 @@ public class Commons {
     }
 
     /**
+     * 截取文章摘要
+     *
+     * @param value 文章内容
+     * @param len   要截取文字的个数
+     * @return
+     */
+    public static String intro(String value, int len) {
+        int pos = value.indexOf("<!--more-->");
+        if (pos != -1) {
+            String html = value.substring(0, pos);
+            return TaleUtils.htmlToText(TaleUtils.mdToHtml(html));
+        } else {
+            String text = TaleUtils.htmlToText(TaleUtils.mdToHtml(value));
+            if (text.length() > len) {
+                return text.substring(0, len);
+            }
+            return text;
+        }
+    }
+
+    /**
      * 显示文章内容，转换markdown为html
      *
      * @param value
@@ -212,6 +264,20 @@ public class Commons {
         }
         return "";
     }
+
+    /**
+     * 显示文章缩略图，顺序为：文章第一张图 -> 随机获取
+     *
+     * @return
+     */
+    public static String show_thumb(ContentVo contents) {
+        int cid = contents.getCid();
+        int size = cid % 20;
+        size = size == 0 ? 1 : size;
+        return "/user/img/rand/" + size + ".jpg";
+    }
+
+
     /**
      * An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!
      * <p>
@@ -225,28 +291,55 @@ public class Commons {
     }
 
     /**
-     * 返回github头像地址
+     * 获取文章第一张图片
      *
-     * @param email
      * @return
      */
-    public static String gravatar(String email) {
-        String avatarUrl = "https://github.com/identicons/";
-        if (StringUtils.isBlank(email)) {
-            email = "user@hanshuai.xin";
+    public static String show_thumb(String content) {
+        content = TaleUtils.mdToHtml(content);
+        if (content.contains("<img")) {
+            String img = "";
+            String regEx_img = "<img.*src\\s*=\\s*(.*?)[^>]*?>";
+            Pattern p_image = Pattern.compile(regEx_img, Pattern.CASE_INSENSITIVE);
+            Matcher m_image = p_image.matcher(content);
+            if (m_image.find()) {
+                img = img + "," + m_image.group();
+                // //匹配src
+                Matcher m = Pattern.compile("src\\s*=\\s*\'?\"?(.*?)(\'|\"|>|\\s+)").matcher(img);
+                if (m.find()) {
+                    return m.group(1);
+                }
+            }
         }
-        String hash = TaleUtils.MD5encode(email.trim().toLowerCase());
-        return avatarUrl + hash + ".png";
+        return "";
+    }
+
+    private static final String[] ICONS = {"bg-ico-book", "bg-ico-game", "bg-ico-note", "bg-ico-chat", "bg-ico-code", "bg-ico-image", "bg-ico-web", "bg-ico-link", "bg-ico-design", "bg-ico-lock"};
+
+    /**
+     * 显示文章图标
+     *
+     * @param cid
+     * @return
+     */
+    public static String show_icon(int cid) {
+        return ICONS[cid % ICONS.length];
     }
 
     /**
-     * 判断分页中是否有数据
+     * 获取社交的链接地址
      *
-     * @param paginator
      * @return
      */
-    public static boolean is_empty(PageInfo paginator) {
-        return paginator == null || (paginator.getList() == null) || (paginator.getList().size() == 0);
+    public static Map<String, String> social() {
+        final String prefix = "social_";
+        Map<String, String> map = new HashMap<>();
+        map.put("weibo", WebConst.initConfig.get(prefix + "weibo"));
+        map.put("zhihu", WebConst.initConfig.get(prefix + "zhihu"));
+        map.put("github", WebConst.initConfig.get(prefix + "github"));
+        map.put("twitter", WebConst.initConfig.get(prefix + "twitter"));
+        return map;
     }
+
 
 }

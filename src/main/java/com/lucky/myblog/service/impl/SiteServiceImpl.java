@@ -1,10 +1,14 @@
 package com.lucky.myblog.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.lucky.myblog.dao.AttachVoMapper;
+import com.lucky.myblog.dao.CommentVoMapper;
 import com.lucky.myblog.dao.ContentVoMapper;
+import com.lucky.myblog.dao.MetaVoMapper;
 import com.lucky.myblog.dto.Types;
 import com.lucky.myblog.model.bo.ArchiveBo;
-import com.lucky.myblog.model.vo.ContentVo;
-import com.lucky.myblog.model.vo.ContentVoExample;
+import com.lucky.myblog.model.bo.StatisticsBo;
+import com.lucky.myblog.model.vo.*;
 import com.lucky.myblog.service.ISiteService;
 import com.lucky.myblog.util.DateKit;
 import org.slf4j.Logger;
@@ -26,6 +30,15 @@ public class SiteServiceImpl implements ISiteService {
 
     @Resource
     private ContentVoMapper contentDao;
+
+    @Resource
+    private CommentVoMapper commentDao;
+
+    @Resource
+    private AttachVoMapper attachDao;
+    @Resource
+    private MetaVoMapper metaDao;
+
 
     @Override
     public List<ArchiveBo> getArchives() {
@@ -49,5 +62,59 @@ public class SiteServiceImpl implements ISiteService {
             });
         }
         return archives;
+    }
+
+    @Override
+    public List<CommentVo> recentComments(int limit) {
+        LOGGER.debug("Enter recentComments method:limit={}", limit);
+        if (limit < 0 || limit > 10) {
+            limit = 10;
+        }
+        CommentVoExample example = new CommentVoExample();
+        example.setOrderByClause("created desc");
+        PageHelper.startPage(1, limit);
+        List<CommentVo> byPage = commentDao.selectByExampleWithBLOBs(example);
+        LOGGER.debug("Exit recentComments method");
+        return byPage;
+    }
+
+    @Override
+    public List<ContentVo> recentContents(int limit) {
+        LOGGER.debug("Enter recentContents method");
+        if (limit < 0 || limit > 10) {
+            limit = 10;
+        }
+        ContentVoExample example = new ContentVoExample();
+        example.setOrderByClause("created desc");
+        PageHelper.startPage(1, limit);
+        List<ContentVo> contentVos = contentDao.selectByExampleWithBLOBs(example);
+        LOGGER.debug("Exit recentContents method");
+        return contentVos;
+    }
+
+    @Override
+    public StatisticsBo getStatistics() {
+        LOGGER.debug("Enter getStatistics method");
+        StatisticsBo statistics = new StatisticsBo();
+
+        ContentVoExample contentVoExample = new ContentVoExample();
+        contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusEqualTo(Types.PUBLISH.getType());
+        Integer articles =   contentDao.countByExample(contentVoExample);
+
+        Integer comments = commentDao.countByExample(new CommentVoExample());
+
+        Integer attachs = attachDao.countByExample(new AttachVoExample());
+
+        MetaVoExample metaVoExample = new MetaVoExample();
+        metaVoExample.createCriteria().andTypeEqualTo(Types.LINK.getType());
+        Integer links = metaDao.countByExample(metaVoExample);
+
+        statistics.setArticles(articles);
+        statistics.setComments(comments);
+        statistics.setAttachs(attachs);
+        statistics.setLinks(links);
+
+        LOGGER.debug("Exit getStatistics method");
+        return statistics;
     }
 }

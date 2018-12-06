@@ -1,6 +1,9 @@
 package com.lucky.myblog.service;
 
 import com.lucky.myblog.model.bo.ArchiveBo;
+import com.lucky.myblog.model.bo.StatisticsBo;
+import com.lucky.myblog.model.vo.CommentVo;
+import com.lucky.myblog.model.vo.ContentVo;
 
 import java.util.List;
 
@@ -18,5 +21,28 @@ public interface ISiteService {
      * @return
      */
     List<ArchiveBo> getArchives();
+
+    /**
+     * 最新收到的评论
+     *
+     * @param limit
+     * @return
+     */
+    List<CommentVo> recentComments(int limit);
+
+    /**
+     * 最新发表的文章
+     *
+     * @param limit
+     * @return
+     */
+    List<ContentVo> recentContents(int limit);
+
+    /**
+     * 获取后台统计数据
+     *
+     * @return
+     */
+    StatisticsBo getStatistics();
 
 }
