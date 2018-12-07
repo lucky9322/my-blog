@@ -253,3 +253,14 @@ public class MyAdapter extends WebMvcConfigurerAdapter {
 
 >事务管理是应用系统开发中必不可少的一部分。Spring 为事务管理提供了丰富的功能支持。Spring 事务管理分为编程式和声明式的两种方式。编程式事务指的是通过编码方式实现事务；声明式事务基于 AOP,将具体业务逻辑与事务处理解耦。声明式事务管理使业务代码逻辑不受污染, 因此在实际使用中声明式事务用的比较多。声明式事务有两种方式，一种是在配置文件（xml）中做相关的事务规则声明，另一种是基于 @Transactional 注解的方式。本文将着重介绍基于 @Transactional 注解的事务管理。
 
+-----
+
+<h1><a href="https://www.jianshu.com/p/c638b3166963">SpringBoot 2.x 自定义拦截器并解决静态资源访问被拦截问题</a></h1>
+
+- [结合部分源码分析 spring boot 2.x静态资源会被拦截器拦截的原因和解决方法](https://blog.csdn.net/ln1593570p/article/details/80607616)
+
+**1.x和2.x的静态资源访问区别**
+
+1. `1.x`的`resources/static`目录下的静态资源可以直接访问，并且访问路径上不用带`static`,当有配置自定义`HandlerInterceptor`拦截器时，请求静态资源路径不会被拦截。
+2. `2.x`的如果自定义`HandlerInterceptor`拦截器时访问静态资源就会被同步拦截,这样为了实现session过期而跳转登录页面功能就会受影响.
+
