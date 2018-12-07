@@ -73,25 +73,25 @@ public class IndexController extends BaseController {
     /**
      * 保存个人信息
      */
-//    @PostMapping(value = "/profile")
-//    @ResponseBody
-//    public RestResponseBo saveProfile(@RequestParam String screenName, @RequestParam String email, HttpServletRequest request, HttpSession session) {
-//        UserVo users = this.user(request);
-//        if (StringUtils.isNotBlank(screenName) && StringUtils.isNotBlank(email)) {
-//            UserVo temp = new UserVo();
-//            temp.setUid(users.getUid());
-//            temp.setScreenName(screenName);
-//            temp.setEmail(email);
-//            userService.updateByUid(temp);
-//            logService.insertLog(LogActions.UP_INFO.getAction(), GsonUtils.toJsonString(temp), request.getRemoteAddr(), this.getUid(request));
-//
-//            //更新session中的数据
-//            UserVo original= (UserVo)session.getAttribute(WebConst.LOGIN_SESSION_KEY);
-//            original.setScreenName(screenName);
-//            original.setEmail(email);
-//            session.setAttribute(WebConst.LOGIN_SESSION_KEY,original);
-//        }
-//        return RestResponseBo.ok();
-//    }
+    @PostMapping(value = "/profile")
+    @ResponseBody
+    public RestResponseBo saveProfile(@RequestParam String screenName, @RequestParam String email, HttpServletRequest request, HttpSession session) {
+        UserVo users = this.user(request);
+        if (StringUtils.isNotBlank(screenName) && StringUtils.isNotBlank(email)) {
+            UserVo temp = new UserVo();
+            temp.setUid(users.getUid());
+            temp.setScreenName(screenName);
+            temp.setEmail(email);
+            userService.updateByUid(temp);
+            logService.insertLog(LogActions.UP_INFO.getAction(), GsonUtils.toJsonString(temp), request.getRemoteAddr(), this.getUid(request));
+
+            //更新session中的数据
+            UserVo original= (UserVo)session.getAttribute(WebConst.LOGIN_SESSION_KEY);
+            original.setScreenName(screenName);
+            original.setEmail(email);
+            session.setAttribute(WebConst.LOGIN_SESSION_KEY,original);
+        }
+        return RestResponseBo.ok();
+    }
 
 }
