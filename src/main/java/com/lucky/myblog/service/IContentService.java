@@ -52,4 +52,10 @@ public interface IContentService {
      */
     PageInfo<ContentVo> getArticlesWithpage(ContentVoExample commentVoExample, Integer page, Integer limit);
 
+
+    /**
+     * 发布文章
+     * @param contents
+     */
+    String publish(ContentVo contents);
 }

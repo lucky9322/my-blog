@@ -13,7 +13,7 @@
         </commentGenerator>
 
         <!--数据库链接URL，用户名、密码 -->
-        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
                         connectionURL="jdbc:mysql://127.0.0.1:3306/tale?characterEncoding=utf8"
                         userId="root"
                         password="12345678">
@@ -37,7 +37,7 @@
         </javaClientGenerator>
 
         <!-- 要生成的表: tableName是数据库中的表名或视图名 domainObjectName是实体类名-->
-        <table tableName="t_attach" domainObjectName="AttachVo"
+        <table tableName="t_relationships" domainObjectName="RelationshipVo"
                enableCountByExample="true" enableUpdateByExample="true"
                enableDeleteByExample="true" enableSelectByExample="true"
                selectByExampleQueryId="true">

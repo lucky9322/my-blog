@@ -136,7 +136,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.lucky.myblog.model.vo.ContentVo" >
+  <insert id="insert" parameterType="com.lucky.myblog.model.vo.ContentVo" useGeneratedKeys="true" keyProperty="cid">
     insert into t_contents (cid, title, slug, 
       created, modified, author_id, 
       type, status, tags, 
