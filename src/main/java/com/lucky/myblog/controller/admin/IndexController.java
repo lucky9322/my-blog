@@ -14,6 +14,7 @@ import com.lucky.myblog.service.ILogService;
 import com.lucky.myblog.service.ISiteService;
 import com.lucky.myblog.service.IUserService;
 import com.lucky.myblog.util.GsonUtils;
+import com.lucky.myblog.util.TaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +71,7 @@ public class IndexController extends BaseController {
     public String profile() {
         return "admin/profile";
     }
+
     /**
      * 保存个人信息
      */
@@ -86,12 +88,50 @@ public class IndexController extends BaseController {
             logService.insertLog(LogActions.UP_INFO.getAction(), GsonUtils.toJsonString(temp), request.getRemoteAddr(), this.getUid(request));
 
             //更新session中的数据
-            UserVo original= (UserVo)session.getAttribute(WebConst.LOGIN_SESSION_KEY);
+            UserVo original = (UserVo) session.getAttribute(WebConst.LOGIN_SESSION_KEY);
             original.setScreenName(screenName);
             original.setEmail(email);
-            session.setAttribute(WebConst.LOGIN_SESSION_KEY,original);
+            session.setAttribute(WebConst.LOGIN_SESSION_KEY, original);
         }
         return RestResponseBo.ok();
+    }
+
+    @PostMapping(value = "/password")
+    @ResponseBody
+    public RestResponseBo upPwd(@RequestParam(value = "oldPassword", required = true, defaultValue = "") String oldPassword,
+                                @RequestParam(value = "password", required = true, defaultValue = "") String password,
+                                HttpServletRequest request, HttpSession session) {
+        UserVo users = this.user(request);
+        if (StringUtils.isBlank(oldPassword) || StringUtils.isBlank(password)) {
+            return RestResponseBo.fail("请确认信息输入完整");
+        }
+        if (!users.getPassword().equals(TaleUtils.MD5encode(users.getUsername() + oldPassword))) {
+            return RestResponseBo.fail("旧密码错误");
+        }
+        if (password.length() < 6 || password.length() > 14) {
+            return RestResponseBo.fail("请输入6-14位密码");
+        }
+        try {
+            UserVo temp = new UserVo();
+            temp.setUid(users.getUid());
+            String pwd = TaleUtils.MD5encode(users.getUsername() + password);
+            temp.setPassword(pwd);
+            userService.updateByUid(temp);
+            logService.insertLog(LogActions.UP_PWD.getAction(), null, request.getRemoteAddr(), this.getUid(request));
+            //更新session中的数据
+            UserVo original = (UserVo) session.getAttribute(WebConst.LOGIN_SESSION_KEY);
+            original.setPassword(pwd);
+            session.setAttribute(WebConst.LOGIN_SESSION_KEY, original);
+            return RestResponseBo.ok();
+        } catch (Exception e) {
+            String msg = "密码修改失败";
+            if (e instanceof TipException) {
+                msg = e.getMessage();
+            } else {
+                LOGGER.error(msg, e);
+            }
+            return RestResponseBo.fail(msg);
+        }
     }
 
 }
