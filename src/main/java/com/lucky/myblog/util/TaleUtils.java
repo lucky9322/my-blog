@@ -245,23 +245,23 @@ public class TaleUtils {
         return content;
     }
 
-//    /**
-//     * 退出登录状态
-//     *
-//     * @param session
-//     * @param response
-//     */
-//    public static void logout(HttpSession session, HttpServletResponse response) {
-//        session.removeAttribute(WebConst.LOGIN_SESSION_KEY);
-//        Cookie cookie = new Cookie(WebConst.USER_IN_COOKIE, "");
-//        cookie.setMaxAge(0);
-//        response.addCookie(cookie);
-//        try {
-//            response.sendRedirect(Commons.site_url());
-//        } catch (IOException e) {
-//            LOGGER.error(e.getMessage(), e);
-//        }
-//    }
+    /**
+     * 退出登录状态
+     *
+     * @param session
+     * @param response
+     */
+    public static void logout(HttpSession session, HttpServletResponse response) {
+        session.removeAttribute(WebConst.LOGIN_SESSION_KEY);
+        Cookie cookie = new Cookie(WebConst.USER_IN_COOKIE, "");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        try {
+            response.sendRedirect(Commons.site_url());
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
 
     /**
      * 替换HTML脚本

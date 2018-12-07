@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 import java.net.URLEncoder;
 import java.util.List;
@@ -350,5 +351,16 @@ public class IndexController extends BaseController {
         cookie.setMaxAge(maxAge);
         cookie.setSecure(false);
         response.addCookie(cookie);
+    }
+
+    /**
+     * 注销 登出
+     *
+     * @param session
+     * @param response
+     */
+    @GetMapping(value = "/logout")
+    public void logout(HttpSession session, HttpServletResponse response) {
+        TaleUtils.logout(session, response);
     }
 }

@@ -17,8 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 /**
  * Project: my-blog
@@ -41,7 +44,7 @@ public class AuthController extends BaseController {
 
 
     @GetMapping("/login")
-    public String login(){
+    public String login() {
         return "admin/login";
     }
 
@@ -76,5 +79,22 @@ public class AuthController extends BaseController {
             return RestResponseBo.fail(msg);
         }
         return RestResponseBo.ok();
+    }
+
+    @GetMapping(value = "/logout")
+    public void logout(HttpSession session, HttpServletResponse response) {
+        session.removeAttribute(WebConst.LOGIN_SESSION_KEY);
+        Cookie cookie=new Cookie(WebConst.USER_IN_COOKIE,"");
+        cookie.setValue(null);
+        //立即销毁cookie
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        try {
+            response.sendRedirect("/admin/login");
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.error("注销失败", e);
+        }
     }
 }
