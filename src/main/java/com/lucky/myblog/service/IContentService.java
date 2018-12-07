@@ -3,6 +3,7 @@ package com.lucky.myblog.service;
 
 import com.github.pagehelper.PageInfo;
 import com.lucky.myblog.model.vo.ContentVo;
+import com.lucky.myblog.model.vo.ContentVoExample;
 
 /**
  * Project: my-blog
@@ -41,5 +42,14 @@ public interface IContentService {
      * @return ContentVo
      */
     PageInfo<ContentVo> getArticles(String keyword,Integer page,Integer limit);
+
+
+    /**
+     * @param commentVoExample
+     * @param page
+     * @param limit
+     * @return
+     */
+    PageInfo<ContentVo> getArticlesWithpage(ContentVoExample commentVoExample, Integer page, Integer limit);
 
 }

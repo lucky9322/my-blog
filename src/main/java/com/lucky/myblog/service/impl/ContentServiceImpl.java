@@ -72,7 +72,7 @@ public class ContentServiceImpl implements IContentService {
 
     @Override
     public PageInfo<ContentVo> getArticles(String keyword, Integer page, Integer limit) {
-        PageHelper.startPage(page,limit);
+        PageHelper.startPage(page, limit);
         ContentVoExample contentVoExample = new ContentVoExample();
         ContentVoExample.Criteria criteria = contentVoExample.createCriteria();
         criteria.andTypeEqualTo(Types.ARTICLE.getType());
@@ -80,6 +80,14 @@ public class ContentServiceImpl implements IContentService {
         criteria.andTitleLike("%" + keyword + "%");
         contentVoExample.setOrderByClause("created desc");
         List<ContentVo> contentVos = contentDao.selectByExampleWithBLOBs(contentVoExample);
+        return new PageInfo<>(contentVos);
+    }
+
+    @Override
+    public PageInfo<ContentVo> getArticlesWithpage(ContentVoExample commentVoExample,
+                                                   Integer page, Integer limit) {
+        PageHelper.startPage(page, limit);
+        List<ContentVo> contentVos = contentDao.selectByExampleWithBLOBs(commentVoExample);
         return new PageInfo<>(contentVos);
     }
 }
