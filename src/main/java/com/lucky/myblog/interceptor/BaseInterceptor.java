@@ -32,6 +32,8 @@ public class BaseInterceptor implements HandlerInterceptor {
 
     @Resource
     private Commons commons;
+    @Resource
+    private AdminCommons adminCommons;
 
     @Resource
     private IUserService userService;
@@ -72,6 +74,7 @@ public class BaseInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
 
         request.setAttribute("commons", commons);//一些工具类和公共方法
+        request.setAttribute("adminCommons", adminCommons);
     }
 
     @Override
