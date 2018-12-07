@@ -1,23 +1,29 @@
 package com.lucky.myblog.controller.admin;
 
+import com.lucky.myblog.constant.WebConst;
 import com.lucky.myblog.controller.BaseController;
+import com.lucky.myblog.dto.LogActions;
 import com.lucky.myblog.exception.TipException;
+import com.lucky.myblog.model.bo.RestResponseBo;
 import com.lucky.myblog.model.bo.StatisticsBo;
 import com.lucky.myblog.model.vo.CommentVo;
 import com.lucky.myblog.model.vo.ContentVo;
 import com.lucky.myblog.model.vo.LogVo;
+import com.lucky.myblog.model.vo.UserVo;
 import com.lucky.myblog.service.ILogService;
 import com.lucky.myblog.service.ISiteService;
 import com.lucky.myblog.service.IUserService;
+import com.lucky.myblog.util.GsonUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -58,5 +64,34 @@ public class IndexController extends BaseController {
         LOGGER.info("Exit admin index method");
         return "admin/index";
     }
+
+
+    @GetMapping(value = "/profile")
+    public String profile() {
+        return "admin/profile";
+    }
+    /**
+     * 保存个人信息
+     */
+//    @PostMapping(value = "/profile")
+//    @ResponseBody
+//    public RestResponseBo saveProfile(@RequestParam String screenName, @RequestParam String email, HttpServletRequest request, HttpSession session) {
+//        UserVo users = this.user(request);
+//        if (StringUtils.isNotBlank(screenName) && StringUtils.isNotBlank(email)) {
+//            UserVo temp = new UserVo();
+//            temp.setUid(users.getUid());
+//            temp.setScreenName(screenName);
+//            temp.setEmail(email);
+//            userService.updateByUid(temp);
+//            logService.insertLog(LogActions.UP_INFO.getAction(), GsonUtils.toJsonString(temp), request.getRemoteAddr(), this.getUid(request));
+//
+//            //更新session中的数据
+//            UserVo original= (UserVo)session.getAttribute(WebConst.LOGIN_SESSION_KEY);
+//            original.setScreenName(screenName);
+//            original.setEmail(email);
+//            session.setAttribute(WebConst.LOGIN_SESSION_KEY,original);
+//        }
+//        return RestResponseBo.ok();
+//    }
 
 }
