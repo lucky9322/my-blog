@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.lucky.myblog.constant.WebConst;
 import com.lucky.myblog.controller.BaseController;
 import com.lucky.myblog.dto.Types;
+import com.lucky.myblog.exception.TipException;
 import com.lucky.myblog.model.bo.RestResponseBo;
 import com.lucky.myblog.model.vo.ContentVo;
 import com.lucky.myblog.model.vo.ContentVoExample;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -28,6 +30,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "/admin/article")
+@Transactional(rollbackFor = TipException.class)
 public class ArticleController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArticleController.class);

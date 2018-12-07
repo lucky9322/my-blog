@@ -363,4 +363,26 @@ public class IndexController extends BaseController {
     public void logout(HttpSession session, HttpServletResponse response) {
         TaleUtils.logout(session, response);
     }
+
+    /**
+     * 文章页(预览)
+     *
+     * @param request 请求
+     * @param cid     文章主键
+     * @return
+     */
+    @GetMapping(value = {"article/{cid}/preview", "article/{cid}.html"})
+    public String articlePreview(HttpServletRequest request, @PathVariable String cid) {
+        ContentVo contents = contentService.getContents(cid);
+        if (null == contents) {
+            return this.render_404();
+        }
+        request.setAttribute("article", contents);
+        request.setAttribute("is_post", true);
+        completeArticle(request, contents);
+        if (!checkHitsFrequency(request, cid)) {
+            updateArticleHit(contents.getCid(), contents.getHits());
+        }
+        return this.render("post");
+    }
 }
