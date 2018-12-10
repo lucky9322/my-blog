@@ -138,6 +138,20 @@ public class MetaServiceImpl implements IMetaService {
         }
     }
 
+    @Override
+    public void update(MetaVo metas) {
+        if (null != metas && null != metas.getMid()) {
+            metaDao.updateByPrimaryKeySelective(metas);
+        }
+    }
+
+    @Override
+    public void saveMeta(MetaVo metas) {
+        if (null != metas) {
+            metaDao.insertSelective(metas);
+        }
+    }
+
     private void saveOrUpdate(Integer cid, String name, String type) {
         MetaVoExample metaVoExample = new MetaVoExample();
         metaVoExample.createCriteria().andTypeEqualTo(type).andNameEqualTo(name);

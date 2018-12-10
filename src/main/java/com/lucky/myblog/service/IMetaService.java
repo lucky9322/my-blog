@@ -45,4 +45,16 @@ public interface IMetaService {
      */
     void delete(int mid);
 
+    /**
+     * 更新项目
+     * @param metas
+     */
+    void update(MetaVo metas);
+
+    /**
+     * 保存项目
+     * @param metas
+     */
+    void saveMeta(MetaVo metas);
+
 }
