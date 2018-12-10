@@ -1,6 +1,7 @@
 package com.lucky.myblog.service;
 
 import com.lucky.myblog.model.bo.ArchiveBo;
+import com.lucky.myblog.model.bo.BackResponseBo;
 import com.lucky.myblog.model.bo.StatisticsBo;
 import com.lucky.myblog.model.vo.CommentVo;
 import com.lucky.myblog.model.vo.ContentVo;
@@ -44,5 +45,15 @@ public interface ISiteService {
      * @return
      */
     StatisticsBo getStatistics();
+
+    /**
+     * 系统备份
+     * @param bk_type
+     * @param bk_path
+     * @param fmt
+     * @return
+     */
+    BackResponseBo backup(String bk_type, String bk_path, String fmt) throws Exception;
+
 
 }
