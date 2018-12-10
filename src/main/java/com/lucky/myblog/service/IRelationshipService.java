@@ -20,4 +20,12 @@ public interface IRelationshipService {
      * @param relationshipVoKey
      */
     void insertVo(RelationshipVoKey relationshipVoKey);
+
+    /**
+     * 按住键删除
+     * @param cid
+     * @param mid
+     */
+    void deleteById(Integer cid, Integer mid);
+
 }

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lucky.myblog.constant.WebConst;
 import com.lucky.myblog.controller.BaseController;
+import com.lucky.myblog.dto.LogActions;
 import com.lucky.myblog.dto.Types;
 import com.lucky.myblog.exception.TipException;
 import com.lucky.myblog.model.bo.RestResponseBo;
@@ -12,6 +13,7 @@ import com.lucky.myblog.model.vo.ContentVoExample;
 import com.lucky.myblog.model.vo.MetaVo;
 import com.lucky.myblog.model.vo.UserVo;
 import com.lucky.myblog.service.IContentService;
+import com.lucky.myblog.service.ILogService;
 import com.lucky.myblog.service.IMetaService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -41,6 +43,9 @@ public class ArticleController extends BaseController {
     @Resource
     private IContentService contentsService;
 
+    @Resource
+    private ILogService logService;
+
 
     @GetMapping(value = "/publish")
     public String newArticle(HttpServletRequest request) {
@@ -64,7 +69,7 @@ public class ArticleController extends BaseController {
 
     @PostMapping(value = "/publish")
     @ResponseBody
-    public RestResponseBo publishArticle(ContentVo contents,HttpServletRequest request){
+    public RestResponseBo publishArticle(ContentVo contents, HttpServletRequest request) {
         UserVo users = this.user(request);
         contents.setAuthorId(users.getUid());
         contents.setType(Types.ARTICLE.getType());
@@ -79,12 +84,23 @@ public class ArticleController extends BaseController {
     }
 
     @GetMapping(value = "/{cid}")
-    public String editArticle(@PathVariable String cid, HttpServletRequest request){
+    public String editArticle(@PathVariable String cid, HttpServletRequest request) {
         ContentVo contents = contentsService.getContents(cid);
         request.setAttribute("contents", contents);
         List<MetaVo> categories = metasService.getMetas(Types.CATEGORY.getType());
         request.setAttribute("categories", categories);
         request.setAttribute("active", "article");
         return "admin/article_edit";
+    }
+
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public RestResponseBo delete(@RequestParam int cid, HttpServletRequest request) {
+        String result = contentsService.deleteByCid(cid);
+        logService.insertLog(LogActions.DEL_ARTICLE.getAction(), cid + "", request.getRemoteAddr(), this.getUid(request));
+        if (!WebConst.SUCCESS_RESULT.equals(result)) {
+            return RestResponseBo.fail(result);
+        }
+        return RestResponseBo.ok();
     }
 }

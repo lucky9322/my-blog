@@ -11,6 +11,7 @@ import com.lucky.myblog.model.vo.ContentVo;
 import com.lucky.myblog.model.vo.ContentVoExample;
 import com.lucky.myblog.service.IContentService;
 import com.lucky.myblog.service.IMetaService;
+import com.lucky.myblog.service.IRelationshipService;
 import com.lucky.myblog.util.DateKit;
 import com.lucky.myblog.util.TaleUtils;
 import com.lucky.myblog.util.Tools;
@@ -38,6 +39,8 @@ public class ContentServiceImpl implements IContentService {
     @Resource
     private IMetaService metasService;
 
+    @Resource
+    private IRelationshipService relationshipService;
 
     @Override
     public PageInfo<ContentVo> getContents(Integer p, Integer limit) {
@@ -153,5 +156,16 @@ public class ContentServiceImpl implements IContentService {
         metasService.saveMetas(cid, categories, Types.CATEGORY.getType());
 
         return WebConst.SUCCESS_RESULT;
+    }
+
+    @Override
+    public String deleteByCid(Integer cid) {
+        ContentVo contents = this.getContents(cid + "");
+        if (null!=contents){
+            contentDao.deleteByPrimaryKey(cid);
+            relationshipService.deleteById(cid, null);
+            return WebConst.SUCCESS_RESULT;
+        }
+        return "数据为空";
     }
 }

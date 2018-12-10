@@ -41,4 +41,17 @@ public class RelationshipServiceImpl implements IRelationshipService {
     public void insertVo(RelationshipVoKey relationshipVoKey) {
         relationshipVoMapper.insert(relationshipVoKey);
     }
+
+    @Override
+    public void deleteById(Integer cid, Integer mid) {
+        RelationshipVoExample relationshipVoExample = new RelationshipVoExample();
+        RelationshipVoExample.Criteria criteria = relationshipVoExample.createCriteria();
+        if (cid != null) {
+            criteria.andCidEqualTo(cid);
+        }
+        if (mid != null) {
+            criteria.andMidEqualTo(mid);
+        }
+        relationshipVoMapper.deleteByExample(relationshipVoExample);
+    }
 }

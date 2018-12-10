@@ -58,4 +58,11 @@ public interface IContentService {
      * @param contents
      */
     String publish(ContentVo contents);
+
+    /**
+     * 根据文章id删除
+     * @param cid
+     */
+    String deleteByCid(Integer cid);
+
 }
