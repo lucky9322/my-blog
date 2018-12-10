@@ -204,4 +204,13 @@ public class ContentServiceImpl implements IContentService {
         metasService.saveMetas(cid, contents.getCategories(), Types.CATEGORY.getType());
         return WebConst.SUCCESS_RESULT;
     }
+
+    @Override
+    public void updateCategory(String ordinal, String newCatefory) {
+        ContentVo contentVo = new ContentVo();
+        contentVo.setCategories(newCatefory);
+        ContentVoExample example = new ContentVoExample();
+        example.createCriteria().andCategoriesEqualTo(ordinal);
+        contentDao.updateByExampleSelective(contentVo, example);
+    }
 }

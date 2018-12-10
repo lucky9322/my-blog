@@ -2,6 +2,8 @@ package com.lucky.myblog.service;
 
 import com.lucky.myblog.model.vo.RelationshipVoKey;
 
+import java.util.List;
+
 /**
  * Project: my-blog
  * Created by Zhangdd on 2018/12/7.
@@ -28,4 +30,11 @@ public interface IRelationshipService {
      */
     void deleteById(Integer cid, Integer mid);
 
+    /**
+     * 根据id搜索
+     * @param cid
+     * @param mid
+     * @return
+     */
+    List<RelationshipVoKey> getRelationshipById(Integer cid, Integer mid);
 }

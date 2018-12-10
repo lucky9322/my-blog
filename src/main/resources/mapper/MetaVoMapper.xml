@@ -10,6 +10,11 @@
     <result column="sort" property="sort" jdbcType="INTEGER" />
     <result column="parent" property="parent" jdbcType="INTEGER" />
   </resultMap>
+
+  <resultMap id="MetaDto" type="com.lucky.myblog.dto.MetaDto" extends="BaseResultMap">
+    <result column="count" property="count" jdbcType="INTEGER"/>
+  </resultMap>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -241,4 +246,8 @@
       parent = #{parent,jdbcType=INTEGER}
     where mid = #{mid,jdbcType=INTEGER}
   </update>
+
+  <select id="selectFromSql" resultMap="MetaDto" parameterType="Map">
+    select a.*, count(b.cid) as count from t_metas a left join `t_relationships` b on a.mid = b.mid where a.type = #{type} group by a.mid order by #{order} limit #{limit}
+  </select>
 </mapper>
