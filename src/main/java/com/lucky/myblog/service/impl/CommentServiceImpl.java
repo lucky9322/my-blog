@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lucky.myblog.constant.WebConst;
 import com.lucky.myblog.dao.CommentVoMapper;
+import com.lucky.myblog.exception.TipException;
 import com.lucky.myblog.model.bo.CommentBo;
 import com.lucky.myblog.model.vo.CommentVo;
 import com.lucky.myblog.model.vo.CommentVoExample;
@@ -94,6 +95,44 @@ public class CommentServiceImpl implements ICommentService {
         contentService.updateContentByCid(temp);
 
         return WebConst.SUCCESS_RESULT;
+    }
+
+    @Override
+    public PageInfo<CommentVo> getCommentsWithPage(CommentVoExample commentVoExample, int page, int limit) {
+        PageHelper.startPage(page, limit);
+        List<CommentVo> commentVos = commentDao.selectByExampleWithBLOBs(commentVoExample);
+        PageInfo<CommentVo> pageInfo = new PageInfo<>(commentVos);
+        return pageInfo;
+    }
+
+    @Override
+    public CommentVo getCommentById(Integer coid) {
+        if (null != coid) {
+            return commentDao.selectByPrimaryKey(coid);
+        }
+        return null;
+    }
+
+    @Override
+    public void delete(Integer coid, Integer cid) {
+        if (null == coid) {
+            throw new TipException("主键为空");
+        }
+        commentDao.deleteByPrimaryKey(coid);
+        ContentVo contents = contentService.getContents(cid + "");
+        if (null != contents && contents.getCommentsNum() > 0) {
+            ContentVo temp = new ContentVo();
+            temp.setCid(cid);
+            temp.setCommentsNum(contents.getCommentsNum() - 1);
+            contentService.updateContentByCid(temp);
+        }
+    }
+
+    @Override
+    public void update(CommentVo comments) {
+        if (null != comments && null != comments.getCoid()) {
+            commentDao.updateByPrimaryKeyWithBLOBs(comments);
+        }
     }
 
     /**
