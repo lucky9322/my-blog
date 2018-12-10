@@ -4,7 +4,9 @@ import com.lucky.myblog.model.vo.AttachVo;
 import com.lucky.myblog.model.vo.AttachVoExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface AttachVoMapper {
     int countByExample(AttachVoExample example);
 
