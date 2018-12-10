@@ -168,4 +168,40 @@ public class ContentServiceImpl implements IContentService {
         }
         return "数据为空";
     }
+
+    @Override
+    public String updateArticle(ContentVo contents) {
+        if (null == contents) {
+            return "文章对象为空";
+        }
+        if (StringUtils.isBlank(contents.getTitle())) {
+            return "文章标题不能为空";
+        }
+        if (StringUtils.isBlank(contents.getContent())) {
+            return "文章内容不能为空";
+        }
+        int titleLength = contents.getTitle().length();
+        if (titleLength > WebConst.MAX_TITLE_COUNT) {
+            return "文章标题过长";
+        }
+        int contentLength = contents.getContent().length();
+        if (contentLength > WebConst.MAX_TEXT_COUNT) {
+            return "文章内容过长";
+        }
+        if (null == contents.getAuthorId()) {
+            return "请登录后发布文章";
+        }
+        if (StringUtils.isBlank(contents.getSlug())) {
+            contents.setSlug(null);
+        }
+        int time = DateKit.getCurrentUnixTime();
+        contents.setModified(time);
+        Integer cid = contents.getCid();
+        contents.setContent(EmojiParser.parseToAliases(contents.getContent()));
+        contentDao.updateByPrimaryKeySelective(contents);
+        relationshipService.deleteById(cid, null);
+        metasService.saveMetas(cid, contents.getTags(), Types.TAG.getType());
+        metasService.saveMetas(cid, contents.getCategories(), Types.CATEGORY.getType());
+        return WebConst.SUCCESS_RESULT;
+    }
 }

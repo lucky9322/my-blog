@@ -65,4 +65,10 @@ public interface IContentService {
      */
     String deleteByCid(Integer cid);
 
+    /**
+     * 编辑文章
+     * @param contents
+     */
+    String updateArticle(ContentVo contents);
+
 }
